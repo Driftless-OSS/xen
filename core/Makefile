@@ -29,18 +29,20 @@ ipod-classic-6g: pre_setup
 qemu-virt-riscv: pre_setup
 	@echo "INFO: Building for target QEMU VIRT RISC-V."
 
-	riscv64-linux-gnu-as riscv/start.S -o build/start.o
-	riscv64-linux-gnu-as riscv/vectors.S -o build/bvec.o
-	riscv64-linux-gnu-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -mcmodel=medany -Iriscv/ -c riscv/exception.c -o build/bex.o
+	riscv64-unknown-elf-as riscv/start.S -o build/start.o
+	riscv64-unknown-elf-as riscv/vectors.S -o build/bvec.o
+	riscv64-unknown-elf-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -mcmodel=medany -Iriscv/ -c riscv/exception.c -o build/bex.o
 	
-	riscv64-linux-gnu-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -c riscv/riscv_init.c -o build/binit.o
+	riscv64-unknown-elf-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -c riscv/riscv_init.c -o build/binit.o
 	
-	riscv64-linux-gnu-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -mcmodel=medany -c ../platform/qvirtrv/pl_init.c -o build/plinit.o
+	riscv64-unknown-elf-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -mcmodel=medany -c ../platform/qvirtrv/pl_init.c -o build/plinit.o
 	
-	riscv64-linux-gnu-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -c ../klib/dlog.c -o build/klog.o
+	riscv64-unknown-elf-gcc -ffreestanding -Wall -Wextra -Werror $(CFLAGS) -c ../klib/dlog.c -o build/klog.o
 	
-	riscv64-linux-gnu-ld -T ../defs/qvirtrv.ld $(ALL_OBJECTS) -o build/kernel.elf
-	riscv64-linux-gnu-objcopy -O binary build/kernel.elf build/kernel.bin
+	riscv64-unknown-elf-ld -T ../defs/qvirtrv.ld $(ALL_OBJECTS) -o build/kernel.elf
+	riscv64-unknown-elf-objcopy -O binary build/kernel.elf build/kernel.bin
+
+	qemu-system-riscv64 -machine virt -bios default -kernel build/kernel.elf -serial mon:stdio -device ramfb
 
 clean:
 	rm -rf build
