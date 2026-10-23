@@ -25,9 +25,7 @@
 .global enter_usermode
 .align 4
 
-.extern page_table_installed
-.extern kernel_page_table
-.extern interrupt_exception_handler
+.extern rv64_exception
 
 trap_vector:
     csrrw sp, sscratch, sp
@@ -48,16 +46,16 @@ trap_vector:
     j stackframe_create
 
 from_usermode:
-    csrr t1, satp
-    mv t0, t1
-    beqz t1, enter_interrupt
-    la t1, kernel_page_table
-    srli t1, t1, 12
-    li t2, 8
-    slli t2, t2, 60
-    or t1, t1, t2
-    csrw satp, t1
-    sfence.vma zero, zero
+    # csrr t1, satp
+    # mv t0, t1
+    # beqz t1, enter_interrupt
+    # la t1, kernel_page_table
+    # srli t1, t1, 12
+    # li t2, 8
+    # slli t2, t2, 60
+    # or t1, t1, t2
+    # csrw satp, t1
+    # sfence.vma zero, zero
 
 enter_interrupt:
     addi sp, sp, -280
@@ -122,8 +120,8 @@ to_user_mode:
     addi t0, sp, 280
     csrw sscratch, t0
     
-    ld t0,  272(sp)
-    csrw satp, t0
+    # ld t0,  272(sp)
+    # csrw satp, t0
     ld x31, 248(sp)       # t6
     ld x30, 240(sp)       # t5
     ld x29, 232(sp)       # t4
