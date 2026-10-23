@@ -44,5 +44,18 @@ qemu-virt-riscv: pre_setup
 
 	qemu-system-riscv64 -machine virt -bios default -kernel build/kernel.elf -serial mon:stdio -device ramfb
 
+qemu-virt-arm64: pre_setup
+	aarch64-linux-gnu-as arm64/start.S -o build/start.o
+	aarch64-linux-gnu-as arm64/vectors.S -o build/bvec.o
+	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -mgeneral-regs-only \
+	-c arm64/exception.c -o build/bex.o
+	
+	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c arm/arm_init.c -o build/binit.o
+	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c ../platform/qvirtarm/pl_init.c -o build/plinit.o
+	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c ../klib/dlog.c -o build/klog.o
+	
+	aarch64-linux-gnu-ld -nostdlib -T ../defs/qvirtarm.ld $(ALL_OBJECTS) -o build/kernel.elf
+	qemu-system-aarch64 -machine virt -cpu cortex-a57 -kernel build/kernel.elf -nographic -serial mon:stdio
+
 clean:
 	rm -rf build
