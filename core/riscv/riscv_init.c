@@ -23,6 +23,7 @@
 
 #include <stdint.h>
 #include <player.h>
+#include <kern/startup.h>
 
 /*
  * Generic RISC-V initialization here.
@@ -33,6 +34,10 @@ void riscv_init(void *dtb)
 	struct pl_info pinfo;
 	pinfo.dtb = dtb;
 	pinfo.boot_args = 0;
-
+	
+	/* initialize platform specific needs */
 	PL_init_platform(&pinfo);
+
+	/* call kernel bootstrap */
+	kernel_startup();
 }

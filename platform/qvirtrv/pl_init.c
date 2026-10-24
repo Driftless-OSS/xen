@@ -54,9 +54,6 @@ void PL_init_platform(struct pl_info *pinfo)
 
 	/* done */
 	kputs("DriftlessPL: Platform Layer initialized\n");
-
-    for (;;)
-        ;
 }
 
 void PL_write_char_serial(char c)
