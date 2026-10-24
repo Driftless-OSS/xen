@@ -34,5 +34,7 @@ void riscv_init(void *dtb)
 	pinfo.dtb = dtb;
 	pinfo.boot_args = 0;
 	
+	*(char *)0 = 2;
+
 	PL_init_platform(&pinfo);
 }

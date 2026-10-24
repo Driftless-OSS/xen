@@ -21,6 +21,8 @@
  *
 */
 
+.extern trap_vector
+
 .global _start
 _start:
     j master_core
@@ -44,5 +46,7 @@ clear_bss:
     j clear_bss
 
 jump_c:
+    la t0, trap_vector
+    csrw stvec, t0
     mv a0, a1
     tail riscv_init
