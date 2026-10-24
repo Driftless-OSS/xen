@@ -24,6 +24,7 @@
 #ifndef ARCH_RV64_REGS
 #define ARCH_RV64_REGS
 
+__attribute__((packed))
 struct rv64_trapframe
 {
     unsigned long long zero;    // zero
