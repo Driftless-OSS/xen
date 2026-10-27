@@ -25,14 +25,35 @@
 #define _PLATFORM_LAYER_H_
 
 #include <stdint.h>
+#include <klib.h>
 
 struct pl_info
 {
 	void *dtb;
 	void *boot_args;
+
+	uptr kernel_start_address;
+	uptr kernel_end_address;
+	u64 kernel_size;
+
+	uptr machine_ram_start;
+	uptr machine_ram_end;
+	u64 machine_ram_size;
+
+	bool machine_has_display;
 };
+
+extern bool g_startup_verbose;
 
 void PL_init_platform(struct pl_info *pinfo);
 void PL_write_char_serial(char c);
+
+struct pl_info *PL_get_info(void);
+void PL_set_info(struct pl_info *pinfo);
+void PL_param_setup(void *b_args);
+
+u64 PL_get_ram_size();
+uptr PL_get_kern_start_address();
+uptr PL_get_kern_end_address();
 
 #endif

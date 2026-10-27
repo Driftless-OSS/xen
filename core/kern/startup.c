@@ -24,11 +24,27 @@
 #include <stdint.h>
 #include <version.h>
 #include <klib.h>
+#include <mm/mm.h>
+
+bool g_startup_verbose = false;
+
+void kernel_startup_log(const char *msg)
+{
+	if (g_startup_verbose) {
+		kputs("kernel_startup: ");
+		kputs(msg);
+		kputs("\n");
+	}
+}
 
 void kernel_startup(void)
 {
+	/* show kernel version */
 	kputs(XEN_VERSION_STRING);
 	kputs("\n");
+
+	kernel_startup_log("mm_bootstrap");
+	mm_bootstrap();
 
 	for(;;);
 }

@@ -42,7 +42,19 @@
 */
 void PL_init_platform(struct pl_info *pinfo)
 {
-	(void)pinfo;
+	PL_set_info(pinfo);
+	PL_param_setup(pinfo->boot_args);
+
+	/* set parameters */
+	pinfo->kernel_start_address = 0x00;
+	pinfo->kernel_end_address = 0x00;
+	pinfo->kernel_size = 0;
+
+	pinfo->machine_ram_start = 0x00;
+	pinfo->machine_ram_end = 0x00;
+	pinfo->machine_ram_size = 0x4000000;
+
+	pinfo->machine_has_display = true;
 
 	/* QEMU virt generally requires no UART setup */
 	kputs("DriftlessPL: initialized uart\n");
