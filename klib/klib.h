@@ -26,6 +26,8 @@
 
 #include <stdint.h>
 
+#define ALIGN(a, b) (((a) + ((b)-1)) & ~((b)-1))
+
 #define false 0
 #define true 1
 #define FALSE false

@@ -27,6 +27,9 @@
 
 #define UART0_BASE 0x09000000
 
+extern char __kernel_start[];
+extern char __kernel_end[];
+
 /*
  * Platform Layer implementation for the QEMU VIRT ARM64.
 */
@@ -46,13 +49,13 @@ void PL_init_platform(struct pl_info *pinfo)
 	PL_param_setup(pinfo->boot_args);
 
 	/* set parameters */
-	pinfo->kernel_start_address = 0x00;
-	pinfo->kernel_end_address = 0x00;
-	pinfo->kernel_size = 0;
+	pinfo->kernel_start_address = (uptr)__kernel_start;
+	pinfo->kernel_end_address = (uptr)__kernel_end;
+	pinfo->kernel_size = (u64)(__kernel_end - __kernel_start);
 
-	pinfo->machine_ram_start = 0x00;
-	pinfo->machine_ram_end = 0x00;
+	pinfo->machine_ram_start = 0x08000000;
 	pinfo->machine_ram_size = 0x4000000;
+	pinfo->machine_ram_end = pinfo->machine_ram_start + pinfo->machine_ram_size;
 
 	pinfo->machine_has_display = true;
 

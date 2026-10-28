@@ -53,6 +53,7 @@ void PL_set_info(struct pl_info *pinfo);
 void PL_param_setup(void *b_args);
 
 u64 PL_get_ram_size();
+u64 PL_get_ram_start_address();
 uptr PL_get_kern_start_address();
 uptr PL_get_kern_end_address();
 

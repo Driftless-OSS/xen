@@ -29,6 +29,8 @@
  * Funky bootstrap allocator
 */
 
+uptr g_balloc_ptr;
+
 void mm_alloc_bootstrap_log(const char *msg)
 {
 	if (g_startup_verbose) {
@@ -40,5 +42,17 @@ void mm_alloc_bootstrap_log(const char *msg)
 
 void mm_alloc_bootstrap(void)
 {
-	mm_alloc_bootstrap_log("unimplemented");
+	mm_alloc_bootstrap_log("initializing");
+
+	/* starts after kernel ends */
+	g_balloc_ptr = PL_get_kern_end_address();
+}
+
+void *mm_balloc(u64 size)
+{
+	/* bump allocation */
+	uptr save = ALIGN(g_balloc_ptr, 8);
+	g_balloc_ptr = (save+ALIGN(size, 8));
+	
+	return (void*)save;
 }

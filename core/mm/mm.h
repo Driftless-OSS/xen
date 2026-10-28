@@ -25,8 +25,11 @@
 #define _MM_KERN_H_
 
 #include <stdint.h>
+#include <klib.h>
 
 void mm_bootstrap(void);
 void mm_alloc_bootstrap(void);
+
+void *mm_balloc(u64 size);
 
 #endif

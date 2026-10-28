@@ -31,8 +31,8 @@ ipod-classic-6g: pre_setup
 	../../qemu-ipod-classic/build/qemu-system-arm -machine iPod-Classic -kernel build/kernel.bin \
 	-semihosting -semihosting-config enable=on,target=native -serial stdio -display sdl
 
-qemu-virt-riscv: pre_setup
-	@echo "INFO: Building for target QEMU VIRT RISC-V."
+qemu-virt-riscv64: pre_setup
+	@echo "INFO: Building for target QEMU VIRT RISC-V64."
 
 	riscv64-unknown-elf-as riscv/start.S -o build/start.o
 	riscv64-unknown-elf-as riscv/vectors.S -o build/bvec.o
@@ -54,6 +54,8 @@ qemu-virt-riscv: pre_setup
 	qemu-system-riscv64 -machine virt -bios default -kernel build/kernel.elf -serial mon:stdio -device ramfb
 
 qemu-virt-arm64: pre_setup
+	@echo "INFO: Building for target QEMU VIRT ARM64."
+	
 	aarch64-linux-gnu-as arm64/start.S -o build/start.o
 	aarch64-linux-gnu-as arm64/vectors.S -o build/bvec.o
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -mgeneral-regs-only \

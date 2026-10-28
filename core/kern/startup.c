@@ -46,5 +46,23 @@ void kernel_startup(void)
 	kernel_startup_log("mm_bootstrap");
 	mm_bootstrap();
 
+	/* temporary test */
+	uptr p = (uptr)mm_balloc(4096);
+
+	if (!p) {
+		kernel_startup_log("failed allocation test");
+		for(;;);
+	}
+
+	kernel_startup_log("allocated 4096 bytes");
+
+	*(uptr*)p = 420;
+	if (*(uptr*)p != 420) {
+		kernel_startup_log("failed read/write test");
+		for(;;);
+	}
+
+	kernel_startup_log("read and wrote 420");
+
 	for(;;);
 }

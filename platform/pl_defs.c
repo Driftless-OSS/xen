@@ -53,6 +53,11 @@ u64 PL_get_ram_size()
 	return g_pinfo->machine_ram_size;
 }
 
+u64 PL_get_ram_start_address()
+{
+	return g_pinfo->machine_ram_start;
+}
+
 uptr PL_get_kern_start_address()
 {
 	return g_pinfo->kernel_start_address;

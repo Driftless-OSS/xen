@@ -25,9 +25,11 @@
 #include <player.h>
 #include <klib.h>
 
-#define PL_RV_VIRT_QEMU
-
 #define UART0_BASE 0x10000000
+#define PL_QVIRTRV_QEMU_RAM_SIZE 0x40000000
+
+extern char __kernel_start[];
+extern char __kernel_end[];
 
 /*
  * Platform Layer implementation for the QEMU VIRT RISC-V
@@ -51,13 +53,13 @@ void PL_init_platform(struct pl_info *pinfo)
 	PL_param_setup(pinfo->boot_args);
 
 	/* set parameters */
-	pinfo->kernel_start_address = 0x00;
-	pinfo->kernel_end_address = 0x00;
-	pinfo->kernel_size = 0;
+	pinfo->kernel_start_address = (uptr)__kernel_start;
+	pinfo->kernel_end_address = (uptr)__kernel_end;
+	pinfo->kernel_size = (u64)(__kernel_end - __kernel_start);
 
-	pinfo->machine_ram_start = 0x00;
-	pinfo->machine_ram_end = 0x00;
-	pinfo->machine_ram_size = 0x4000000;
+	pinfo->machine_ram_start = 0x80000000;
+	pinfo->machine_ram_size = PL_QVIRTRV_QEMU_RAM_SIZE;
+	pinfo->machine_ram_end = pinfo->machine_ram_start + pinfo->machine_ram_size;
 
 	pinfo->machine_has_display = true;
 	
