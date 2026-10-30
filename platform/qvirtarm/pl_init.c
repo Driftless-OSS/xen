@@ -120,7 +120,7 @@ void PL_init_platform(struct pl_info *pinfo)
 	pinfo->kernel_end_address = (uptr)__kernel_end;
 	pinfo->kernel_size = (u64)(__kernel_end - __kernel_start);
 
-	pinfo->machine_ram_start = 0x08000000;
+	pinfo->machine_ram_start = 0x40000000;
 	pinfo->machine_ram_size = 0x4000000;
 	pinfo->machine_ram_end = pinfo->machine_ram_start + pinfo->machine_ram_size;
 
