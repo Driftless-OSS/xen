@@ -41,5 +41,6 @@ typedef u8 bool;
 typedef uintptr_t uptr;
 
 void kputs(const char *str);
+void kmemcpy(void *dest, void *src, uint64_t n);
 
 #endif
