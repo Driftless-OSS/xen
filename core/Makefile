@@ -68,6 +68,7 @@ qemu-virt-arm64: pre_setup
 	
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c arm/arm_init.c -o build/binit.o
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c ../platform/qvirtarm/pl_init.c -o build/plinit.o
+	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c ../platform/qvirtarm/ramfb.c -o build/plramfb.o
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c ../platform/pl_defs.c -o build/pldefs.o
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c ../klib/dlog.c -o build/klog.o
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c ../klib/memory.c -o build/kmem.o
@@ -75,7 +76,7 @@ qemu-virt-arm64: pre_setup
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c mm/mm_init.c -o build/kmminit.o
 	aarch64-linux-gnu-gcc -ffreestanding -nostdlib -nostartfiles -Wall -Wextra -Werror $(CFLAGS) -c mm/mm_balloc.c -o build/kmmballoc.o
 	
-	aarch64-linux-gnu-ld -nostdlib -T ../defs/qvirtarm.ld $(ALL_OBJECTS) -o build/kernel.elf
+	aarch64-linux-gnu-ld -nostdlib -T ../defs/qvirtarm.ld $(ALL_OBJECTS) build/plramfb.o -o build/kernel.elf
 	qemu-system-aarch64 -machine virt -cpu cortex-a57 -kernel build/kernel.elf -serial mon:stdio -device ramfb
 
 clean:

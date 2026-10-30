@@ -57,4 +57,8 @@ u64 PL_get_ram_start_address();
 uptr PL_get_kern_start_address();
 uptr PL_get_kern_end_address();
 
+void PL_put_pixel(u16 x, u16 y, u8 r, u8 g, u8 b);
+void PL_clear_display(u8 r, u8 g, u8 b);
+void PL_present_display(void);
+
 #endif

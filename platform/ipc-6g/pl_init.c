@@ -36,6 +36,55 @@ extern char __kernel_end[];
  * Generally no DTB to parse here, so DTB pointer is ignored.
 */
 
+uint32_t rgb_to_argb(uint8_t a, uint8_t r, uint8_t g, uint8_t b) {
+    return ((uint32_t)a << 24) | 
+           ((uint32_t)r << 16) | 
+           ((uint32_t)g << 8)  | 
+           ((uint32_t)b);
+}
+
+/*
+ * Routine PL_put_pixel
+ *
+ * Outputs a single pixel of RGB format to the display.
+ *
+ * Parameters
+ *  x, y - Coordinates.
+ *  r, g, b - Color.
+*/
+void PL_put_pixel(u16 x, u16 y, u8 r, u8 g, u8 b)
+{
+	u32 clr = rgb_to_argb(0, r, g, b);
+	PL_clcd_pixel(x, y, clr);
+}
+
+/*
+ * Routine PL_clear_display
+ *
+ * Clears the display with a single color.
+ *
+ * Parameters
+ *  r, g, b - Color.
+*/
+void PL_clear_display(u8 r, u8 g, u8 b)
+{
+	u32 clr = rgb_to_argb(0, r, g, b);
+	PL_clcd_fill(clr);
+}
+
+/*
+ * Routine PL_present_display
+ *
+ * Blits the framebuffer to the physical display.
+ *
+ * Parameters
+ *  None.
+*/
+void PL_present_display(void)
+{
+	PL_clcd_flush();
+}
+
 /*
  * Routine PL_init_platform
  *

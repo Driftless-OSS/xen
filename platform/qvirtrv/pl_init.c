@@ -91,6 +91,19 @@ void PL_clear_display(u8 r, u8 g, u8 b)
 }
 
 /*
+ * Routine PL_present_display
+ *
+ * Blits the framebuffer to the physical display.
+ *
+ * Parameters
+ *  None.
+*/
+void PL_present_display(void)
+{
+	/* Nothing to do on this platform */
+}
+
+/*
  * Routine PL_init_platform
  *
  * Initializes the platform by setting up the serial for early output, the

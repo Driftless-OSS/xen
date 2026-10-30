@@ -24,15 +24,82 @@
 #include <stdint.h>
 #include <player.h>
 #include <klib.h>
+#include <qvirtarm/ramfb.h>
 
 #define UART0_BASE 0x09000000
 
 extern char __kernel_start[];
 extern char __kernel_end[];
 
+static fb_info *g_fb;
+
 /*
  * Platform Layer implementation for the QEMU VIRT ARM64.
 */
+
+/*
+ * Routine PL_put_pixel
+ *
+ * Outputs a single pixel of RGB format to the display.
+ *
+ * Parameters
+ *  x, y - Coordinates.
+ *  r, g, b - Color.
+*/
+void PL_put_pixel(u16 x, u16 y, u8 r, u8 g, u8 b)
+{
+	static u8 fbclr[4];
+
+	fbclr[0] = r;
+	fbclr[1] = g;
+	fbclr[2] = b;
+	fbclr[3] = 0;
+
+	ramfb_xrgb256_pixel(g_fb, x, y, fbclr);
+}
+
+/*
+ * Routine PL_clear_display
+ *
+ * Clears the display with a single color.
+ *
+ * Parameters
+ *  r, g, b - Color.
+*/
+void PL_clear_display(u8 r, u8 g, u8 b)
+{
+	static u8 fbclr[4];
+
+	fbclr[0] = r;
+	fbclr[1] = g;
+	fbclr[2] = b;
+	fbclr[3] = 0;
+
+	u64 active_row_bytes = g_fb->fb_width * g_fb->fb_bpp;
+	u8 row_buffer[g_fb->fb_width*4];
+
+	for (u32 x=0; x<g_fb->fb_width; x++) {
+		kmemcpy(&row_buffer[x*g_fb->fb_bpp], fbclr, g_fb->fb_bpp);
+	}
+
+	for (u32 y=0; y<g_fb->fb_height; y++) {
+		u8 *row_dst = (u8*)g_fb->fb_addr + (y*g_fb->fb_stride);
+		kmemcpy(row_dst, row_buffer, active_row_bytes);
+	}
+}
+
+/*
+ * Routine PL_present_display
+ *
+ * Blits the framebuffer to the physical display.
+ *
+ * Parameters
+ *  None.
+*/
+void PL_present_display(void)
+{
+	/* Nothing to do on this platform */
+}
 
 /*
  * Routine PL_init_platform
@@ -62,7 +129,23 @@ void PL_init_platform(struct pl_info *pinfo)
 	/* QEMU virt generally requires no UART setup */
 	kputs("DriftlessPL: initialized uart\n");
 
-	/* TODO initialize ramfb here */
+	/* Initialize the QEMU RAMFB display with 480x800 */
+	if (ramfb_check_fw_cfg_dma()) {
+		kputs("clcd wakeup\n");
+		g_fb = ramfb_init(480, 800);
+
+		if (!g_fb) {
+			kputs("unexpected clcd settings\n");
+			for(;;);
+		}
+		
+		kputs("clcd flush to all white\n");
+		PL_clear_display(255, 255, 255);
+	} else {
+		/* no display? no P  A  S  S */
+		kputs("unexpected clcd error\n");
+		for(;;);
+	}
 
 	/* done */
 	kputs("DriftlessPL: Platform Layer initialized\n");
